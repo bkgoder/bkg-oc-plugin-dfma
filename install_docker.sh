@@ -69,7 +69,17 @@ if [ "$OS" = "Linux" ]; then
         # Install using dnf/yum
         echo "Installing Docker via dnf/yum..."
         sudo dnf -y install dnf-plugins-core
-        sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+        
+        # Set appropriate repository URL based on distribution
+        if [ "$DISTRO" = "rhel" ]; then
+            REPO_URL="https://download.docker.com/linux/rhel/docker-ce.repo"
+        elif [ "$DISTRO" = "centos" ]; then
+            REPO_URL="https://download.docker.com/linux/centos/docker-ce.repo"
+        else
+            REPO_URL="https://download.docker.com/linux/fedora/docker-ce.repo"
+        fi
+        
+        sudo dnf config-manager --add-repo "$REPO_URL"
         sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     else
         echo "Unsupported Linux distribution: $DISTRO"

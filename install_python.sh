@@ -13,8 +13,12 @@ if command -v pyenv &> /dev/null; then
     read -p "Do you want to update it? (y/n) " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
-        cd "$HOME/.pyenv" && git pull && cd -
-        echo "pyenv updated successfully!"
+        if cd "$HOME/.pyenv" && git pull && cd -; then
+            echo "pyenv updated successfully!"
+        else
+            echo "Warning: Failed to update pyenv. You may need to manually update it."
+            echo "Try running: cd ~/.pyenv && git pull"
+        fi
     fi
 else
     # Install dependencies (for Debian/Ubuntu)
