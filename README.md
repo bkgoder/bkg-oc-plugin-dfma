@@ -296,6 +296,20 @@ await adapter.recordVote({ sessionId, agentId, choice, rationale })
 
 ## BKG workflow assets
 
+## Configuration sync
+
+Configure a private Git repository through the plugin environment:
+
+```text
+BKG_OPENCODE_SYNC_REPO=https://github.com/OWNER/PRIVATE-REPO.git
+BKG_OPENCODE_SYNC_BRANCH=main
+# Optional: BKG_OPENCODE_SYNC_LOCAL_PATH=~/.local/share/opencode-sync
+```
+
+The plugin exposes `sync_status`, `sync_push`, and `sync_pull`. Authentication files,
+prompt history, and other secret paths are excluded by default. Pulls back up existing
+local files below the plugin runtime directory before replacing them.
+
 Assets live under:
 
 ```text

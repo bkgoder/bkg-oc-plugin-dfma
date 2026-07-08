@@ -3,6 +3,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
+import { createSyncService, defaultSyncConfig } from "./sync/index.js";
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 function delegationRoot() {
     return path.join(os.homedir(), ".local", "share", "opencode", "delegations");
@@ -157,6 +158,29 @@ export function createBackgroundAgentsPlugin() {
                         filePath: r.filePath,
                         updatedAt: r.updatedAt,
                     })), null, 2);
+                },
+            }),
+            sync_status: tool({
+                description: "Show OpenCode configuration sync status without changing files.",
+                args: {},
+                async execute() {
+                    return JSON.stringify(await createSyncService(defaultSyncConfig()).status(), null, 2);
+                },
+            }),
+            sync_push: tool({
+                description: "Copy configured OpenCode files into the sync repository, commit and push them.",
+                args: {
+                    message: tool.schema.string().optional().describe("Optional git commit message."),
+                },
+                async execute(args) {
+                    return JSON.stringify(await createSyncService(defaultSyncConfig()).push(args.message), null, 2);
+                },
+            }),
+            sync_pull: tool({
+                description: "Fast-forward the sync repository and restore configured OpenCode files with backups.",
+                args: {},
+                async execute() {
+                    return JSON.stringify(await createSyncService(defaultSyncConfig()).pull(), null, 2);
                 },
             }),
         },

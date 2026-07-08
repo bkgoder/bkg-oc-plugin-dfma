@@ -1,13 +1,19 @@
-import * as os from "node:os"
 import * as path from "node:path"
 import { runtimeRoot } from "../core/store"
+import { resolveSyncPlatformPaths } from "./paths"
 import type { SyncConfig, SyncPathSpec } from "./types"
 
-const home = os.homedir()
-
 export function defaultSyncConfig(): SyncConfig {
+  const remote = process.env.BKG_OPENCODE_SYNC_REPO
+  const repo = remote
+    ? {
+        remote,
+        branch: process.env.BKG_OPENCODE_SYNC_BRANCH ?? "main",
+        localPath: process.env.BKG_OPENCODE_SYNC_LOCAL_PATH,
+      }
+    : undefined
   return {
-    repo: undefined,
+    repo,
     includeSecrets: false,
     includeSessions: false,
     includePromptStash: false,
@@ -21,11 +27,20 @@ export function defaultSyncConfig(): SyncConfig {
   }
 }
 
-export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): SyncPathSpec[] {
+export function defaultSyncPaths(
+  config: SyncConfig = defaultSyncConfig(),
+  env: NodeJS.ProcessEnv = process.env,
+  platform: NodeJS.Platform = process.platform,
+): SyncPathSpec[] {
+  const roots = resolveSyncPlatformPaths(env, platform)
+  const pathApi = platform === "win32" ? path.win32 : path.posix
+  const configRoot = pathApi.join(roots.config, "opencode")
+  const dataRoot = pathApi.join(roots.data, "opencode")
+  const stateRoot = pathApi.join(roots.state, "opencode")
   const specs: SyncPathSpec[] = [
     {
       id: "opencode-json",
-      path: path.join(home, ".config", "opencode", "opencode.json"),
+      path: pathApi.join(configRoot, "opencode.json"),
       kind: "file",
       secret: false,
       optional: true,
@@ -33,7 +48,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
     },
     {
       id: "opencode-jsonc",
-      path: path.join(home, ".config", "opencode", "opencode.jsonc"),
+      path: pathApi.join(configRoot, "opencode.jsonc"),
       kind: "file",
       secret: false,
       optional: true,
@@ -41,7 +56,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
     },
     {
       id: "opencode-agents-md",
-      path: path.join(home, ".config", "opencode", "AGENTS.md"),
+      path: pathApi.join(configRoot, "AGENTS.md"),
       kind: "file",
       secret: false,
       optional: true,
@@ -52,7 +67,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
   if (config.includeOpencodeSkills) {
     specs.push({
       id: "opencode-skills",
-      path: path.join(home, ".config", "opencode", "skills"),
+      path: pathApi.join(configRoot, "skills"),
       kind: "directory",
       secret: false,
       optional: true,
@@ -63,7 +78,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
   if (config.includeAgentsDir) {
     specs.push({
       id: "agents-dir",
-      path: path.join(home, ".agents"),
+      path: pathApi.join(roots.home, ".agents"),
       kind: "directory",
       secret: false,
       optional: true,
@@ -74,7 +89,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
   if (config.includeModelFavorites) {
     specs.push({
       id: "model-favorites",
-      path: path.join(home, ".local", "state", "opencode", "model.json"),
+      path: pathApi.join(stateRoot, "model.json"),
       kind: "file",
       secret: false,
       optional: true,
@@ -86,7 +101,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
     specs.push(
       {
         id: "prompt-stash",
-        path: path.join(home, ".local", "state", "opencode", "prompt-stash.jsonl"),
+        path: pathApi.join(stateRoot, "prompt-stash.jsonl"),
         kind: "file",
         secret: true,
         optional: true,
@@ -94,7 +109,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
       },
       {
         id: "prompt-history",
-        path: path.join(home, ".local", "state", "opencode", "prompt-history.jsonl"),
+        path: pathApi.join(stateRoot, "prompt-history.jsonl"),
         kind: "file",
         secret: true,
         optional: true,
@@ -129,7 +144,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
     specs.push(
       {
         id: "opencode-auth",
-        path: path.join(home, ".local", "share", "opencode", "auth.json"),
+        path: pathApi.join(dataRoot, "auth.json"),
         kind: "file",
         secret: true,
         optional: true,
@@ -137,7 +152,7 @@ export function defaultSyncPaths(config: SyncConfig = defaultSyncConfig()): Sync
       },
       {
         id: "opencode-mcp-auth",
-        path: path.join(home, ".local", "share", "opencode", "mcp-auth.json"),
+        path: pathApi.join(dataRoot, "mcp-auth.json"),
         kind: "file",
         secret: true,
         optional: true,

@@ -12,6 +12,7 @@ import { captureOutput, readOutput, listOutputs } from "./subagents/output-captu
 import { createBlocker, updateBlocker, readBlocker, listBlockers, shouldStartRat } from "./ensemble/blockers.js"
 import { createRatSession, addAgentPosition, setFourthVoice, completeRatSession, readRatSession, listRatSessions } from "./ensemble/rat.js"
 import { castVote, tallyVotes, determineOutcome, listVotes } from "./ensemble/votes.js"
+import { createSyncService, defaultSyncConfig, defaultSyncPaths, buildSyncManifest, getSyncStatus } from "./sync/index.js"
 export type { AgentIdentity, IdentityRegistry } from "./identity.js"
 export type { PersonalityPreset } from "./personality.js"
 export type { BitshitControlAdapter } from "./bitshit/types.js"
@@ -23,6 +24,7 @@ export type { AgentRunOutput } from "./subagents/output-capture.js"
 export type { BlockerRecord } from "./ensemble/blockers.js"
 export type { RatSession, AgentPosition } from "./ensemble/rat.js"
 export type { VoteRecord, VoteTally, VoteChoice, VoteOutcome } from "./ensemble/votes.js"
+export type { SyncConfig, SyncManifest, SyncOperationResult, SyncPathSpec, SyncStatus } from "./sync/index.js"
 
 export default createBackgroundAgentsPlugin()
 export {
@@ -39,4 +41,5 @@ export {
   createBlocker, updateBlocker, readBlocker, listBlockers, shouldStartRat,
   createRatSession, addAgentPosition, setFourthVoice, completeRatSession, readRatSession, listRatSessions,
   castVote, tallyVotes, determineOutcome, listVotes,
+  createSyncService, defaultSyncConfig, defaultSyncPaths, buildSyncManifest, getSyncStatus,
 }

@@ -3,6 +3,7 @@ export interface SyncRepoConfig {
   name?: string
   branch: string
   remote?: string
+  localPath?: string
 }
 
 export interface SyncConfig {
@@ -42,4 +43,13 @@ export interface SyncStatus {
   pathCount: number
   secretPathCount: number
   warnings: string[]
+}
+
+export interface SyncOperationResult {
+  action: "push" | "pull"
+  repoPath: string
+  changed: boolean
+  files: string[]
+  commit?: string
+  backupPath?: string
 }
