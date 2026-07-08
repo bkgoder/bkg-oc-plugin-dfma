@@ -1,7 +1,7 @@
 {
-  "name": "bkg-oc-plugin-stop-4uck-m3-agen1s",
+  "name": "bkg-oc-plugin-bkg-dfma",
   "version": "0.1.0",
-  "description": "BKG OpenCode plugin pack with background agents, six-main workflow assets, Agent Rat and vote skills.",
+  "description": "BKG OpenCode plugin pack with background agents, rules, Agent Rat, dashboard review gates, sync, memory and BitShit adapter APIs.",
   "type": "module",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -22,22 +22,27 @@
     "dist",
     "assets",
     "scripts",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "install:assets": "tsx scripts/install-assets.ts"
+    "test": "vitest run",
+    "lint:readme": "node scripts/lint-readme.mjs",
+    "ci": "npm run lint:readme && npm run typecheck && npm run test && npm run build && npm pack --dry-run",
+    "install:assets": "tsx scripts/install-assets.ts",
+    "dashboard:start": "tsx src/dashboard/server.ts"
   },
   "dependencies": {
-    "@opencode-ai/plugin": "latest",
-    "@opencode-ai/sdk": "latest",
-    "unique-names-generator": "^4.7.1"
+    "@opencode-ai/plugin": "^1.1.10",
+    "@opencode-ai/sdk": "^0.32.0"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "tsx": "latest",
-    "typescript": "latest"
+    "@types/node": "^22.13.14",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2",
+    "vitest": "^3.2.4"
   },
   "license": "MIT"
 }
