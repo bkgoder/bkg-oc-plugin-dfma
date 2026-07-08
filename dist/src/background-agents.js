@@ -4,6 +4,7 @@ import * as path from "node:path";
 import { tool } from "@opencode-ai/plugin";
 import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import { createSyncService, defaultSyncConfig } from "./sync/index.js";
+import { openReviewGate } from "./review-gate/index.js";
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 function delegationRoot() {
     return path.join(os.homedir(), ".local", "share", "opencode", "delegations");
@@ -181,6 +182,36 @@ export function createBackgroundAgentsPlugin() {
                 args: {},
                 async execute() {
                     return JSON.stringify(await createSyncService(defaultSyncConfig()).pull(), null, 2);
+                },
+            }),
+            open_review_gate: tool({
+                description: "Open a local, short-lived review gate for a blocker, Rat decision, or manual review.",
+                args: {
+                    title: tool.schema.string().describe("Review title."),
+                    content: tool.schema.string().describe("Plan, decision, or blocker content to review."),
+                    trigger: tool.schema.enum(["rat", "blocker", "manual", "agent"]).describe("Reason for opening review."),
+                    target: tool.schema.string().optional().describe("Primary file or artifact being reviewed."),
+                    blockerId: tool.schema.string().optional().describe("Related blocker id."),
+                    ratSessionId: tool.schema.string().optional().describe("Related Rat session id."),
+                    workflow: tool.schema.enum(["rat-only", "blocker-only", "manual", "all-agents", "user-managed"]).optional(),
+                    timeoutMs: tool.schema.number().int().positive().max(3_600_000).optional(),
+                },
+                async execute(args, context) {
+                    const result = await openReviewGate({
+                        title: args.title,
+                        content: args.content,
+                        trigger: args.trigger,
+                        target: args.target,
+                        blockerId: args.blockerId,
+                        ratSessionId: args.ratSessionId,
+                        workflow: args.workflow,
+                        actorRole: context.agent,
+                        metadata: {
+                            sessionId: context.sessionID,
+                            worktree: context.worktree,
+                        },
+                    }, { timeoutMs: args.timeoutMs });
+                    return JSON.stringify(result, null, 2);
                 },
             }),
         },

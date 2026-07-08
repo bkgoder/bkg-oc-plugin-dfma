@@ -310,6 +310,26 @@ The plugin exposes `sync_status`, `sync_push`, and `sync_pull`. Authentication f
 prompt history, and other secret paths are excluded by default. Pulls back up existing
 local files below the plugin runtime directory before replacing them.
 
+## Local review gate
+
+`open_review_gate` opens a short-lived local browser review for blockers and Rat
+decisions. The default workflow is `blocker-only`; supported modes are
+`rat-only`, `blocker-only`, `manual`, `all-agents`, and `user-managed`.
+Approve, reject, revise, annotations, and line-range edits are persisted into
+plugin memory and linked Rat reviews also record the human vote. The server
+stops after the decision.
+
+Remote and browser behavior can be configured with:
+
+```text
+BKG_OC_REVIEW_REMOTE=1
+BKG_OC_REVIEW_PORT=4774
+BKG_OC_REVIEW_BROWSER=/path/to/browser
+```
+
+The equivalent `BKG_OC_DASHBOARD_REMOTE`, `BKG_OC_DASHBOARD_PORT`, and
+`BKG_OC_DASHBOARD_BROWSER` variables are accepted as compatibility fallbacks.
+
 Assets live under:
 
 ```text
