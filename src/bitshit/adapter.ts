@@ -9,7 +9,6 @@ import type {
   ApprovalInput,
   ApprovalDecision,
   MemoryInput,
-  VoteDecision,
 } from "./types.js"
 
 function makeId(): string {
@@ -20,6 +19,14 @@ function now(): string {
   return new Date().toISOString()
 }
 
+/**
+ * Compatibility-only adapter.
+ *
+ * Use createRuntimeBitshitAdapter() from ./runtime-adapter.js for real persisted
+ * blocker, Rat, vote and memory behavior. This adapter intentionally avoids
+ * random decisions and marks approval output as a stub so callers cannot mistake
+ * it for production state.
+ */
 export function createBitshitAdapter(): BitshitControlAdapter {
   return {
     async reportBlocker(input: BlockerInput): Promise<BlockerRecord> {
@@ -29,6 +36,7 @@ export function createBitshitAdapter(): BitshitControlAdapter {
         description: input.description,
         context: input.context,
         status: "open",
+        severity: input.severity,
         createdAt: now(),
       }
     },
@@ -55,13 +63,13 @@ export function createBitshitAdapter(): BitshitControlAdapter {
       }
     },
 
-    async requestApproval(input: ApprovalInput): Promise<ApprovalDecision> {
-      const decisions: VoteDecision[] = ["approved", "rejected", "revise", "blocked"]
+    async requestApproval(_input: ApprovalInput): Promise<ApprovalDecision> {
       return {
-        decision: decisions[Math.floor(Math.random() * decisions.length)],
-        voteSummary: { approve: 0, reject: 0, abstain: 0 },
+        decision: "blocked",
+        voteSummary: { approve: 0, reject: 0, abstain: 0, total: 0 },
         decidedAt: now(),
         decidedBy: "bitshit-adapter-stub",
+        isStub: true,
       }
     },
 
