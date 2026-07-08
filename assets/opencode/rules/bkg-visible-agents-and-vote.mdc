@@ -1,0 +1,35 @@
+---
+keywords: ["4ucker", "team", "rat", "vote", "approval", "agent", "debate"]
+match: any
+---
+
+# Visible Agents and Vote Required
+
+For `4ucker team`, visibly call:
+
+- `@bkg-4ucker-builder`
+- `@bkg-4ucker-reviewer`
+- `@bkg-4ucker-product`
+
+For `4ucker rat`, visibly call relevant council agents:
+
+- `@bkg-rat-architect`
+- `@bkg-rat-builder`
+- `@bkg-rat-reviewer`
+- `@bkg-rat-product`
+- `@bkg-rat-growth`
+- `@bkg-rat-contrarian`
+
+For approval, visibly call:
+
+- `@bkg-vote-chair`
+- `@bkg-vote-recorder`
+- `@bkg-vote-auditor`
+
+Rules:
+
+- Skill loading is not work.
+- Fake inline roleplay is not enough when real agents exist.
+- A debate report alone is not enough.
+- No vote record, no approval.
+- Blocker votes block approval until resolved.
