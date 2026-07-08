@@ -1,0 +1,42 @@
+---
+keywords: ["0ero", "1brain", "2hit", "3some", "4ever", "4ucker", "bkg", "workflow"]
+match: any
+---
+
+# BKG Six Main Workflow
+
+Only these six commands are top-level workflow commands:
+
+- `0ero`
+- `1brain`
+- `2hit`
+- `3some`
+- `4ever`
+- `4ucker`
+
+Everything else must be a subcommand or an OpenCode agent/tool/skill.
+
+Forbidden legacy main commands:
+
+- `0ro`
+- `brain`
+- `remember`
+- `slave4ever`
+- `4uckerthink`
+- `think4ucker`
+- `git-status`
+- `commit`
+- `pull`
+- `push`
+
+Required discipline:
+
+1. Inspect state first.
+2. Add or run a task before work.
+3. Use visible subagents for 4ucker debates.
+4. Use vote skills before approval.
+5. Save reports.
+6. Write memory.
+
+No memory, no done.
+No vote record, no approval.
