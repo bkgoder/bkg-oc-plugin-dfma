@@ -2,20 +2,17 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { tool } from "@opencode-ai/plugin";
-import { adjectives, animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import { createSyncService, defaultSyncConfig } from "./sync/index.js";
 import { openReviewGate } from "./review-gate/index.js";
+import { createDelegation, listDelegations, readDelegation, updateDelegation, } from "./subagents/delegation.js";
+import { createSubtask, listSubtasks } from "./subagents/subtasks.js";
+import { captureOutput, listOutputs } from "./subagents/output-capture.js";
 const DEFAULT_TIMEOUT_MS = 15 * 60 * 1000;
 function delegationRoot() {
     return path.join(os.homedir(), ".local", "share", "opencode", "delegations");
 }
 function makeId() {
-    return uniqueNamesGenerator({
-        dictionaries: [adjectives, colors, animals],
-        separator: "-",
-        length: 3,
-        style: "lowerCase",
-    });
+    return `delegation-${crypto.randomUUID()}`;
 }
 function summarize(text) {
     const first = text.split("\n").find((line) => line.trim().length > 0)?.trim() ?? "Delegation";
@@ -119,46 +116,112 @@ export function createBackgroundAgentsPlugin() {
     return async () => ({
         tool: {
             delegate: tool({
-                description: "Persist a background delegation request and return an id for later retrieval.",
+                description: "Create a durable pending delegation and registration output.",
                 args: {
                     prompt: tool.schema.string().describe("Research/task prompt to delegate."),
                     agent: tool.schema.string().describe("Read-only subagent name to delegate to."),
                 },
                 async execute(args) {
-                    const record = await runDelegation(args.prompt, args.agent);
+                    const record = await createDelegation(args);
+                    const output = await captureOutput({
+                        agentId: args.agent,
+                        delegationId: record.id,
+                        content: `Delegation registered for ${args.agent}.\n\n${args.prompt}`,
+                        metadata: { kind: "registration" },
+                    });
                     return JSON.stringify({
                         id: record.id,
                         status: record.status,
                         title: record.title,
                         description: record.description,
-                        filePath: record.filePath,
+                        outputId: output.id,
                     }, null, 2);
                 },
             }),
             delegation_read: tool({
-                description: "Read a persisted background delegation artifact by id.",
+                description: "Read a delegation together with linked subtasks and outputs.",
                 args: {
                     id: tool.schema.string().describe("Delegation id returned by delegate()."),
                 },
                 async execute(args) {
-                    const record = await readRecord(args.id);
-                    return JSON.stringify(record, null, 2);
+                    const [delegation, subtasks, outputs] = await Promise.all([
+                        readDelegation(args.id),
+                        listSubtasks(args.id),
+                        listOutputs(undefined, args.id),
+                    ]);
+                    return JSON.stringify({ delegation, subtasks, outputs }, null, 2);
                 },
             }),
             delegation_list: tool({
                 description: "List persisted background delegations with titles, status and artifact paths.",
                 args: {},
                 async execute() {
-                    const records = await listRecords();
+                    const records = await listDelegations();
                     return JSON.stringify(records.map((r) => ({
                         id: r.id,
                         status: r.status,
                         agent: r.agent,
                         title: r.title,
                         description: r.description,
-                        filePath: r.filePath,
+                        subtaskCount: r.subtaskIds.length,
                         updatedAt: r.updatedAt,
                     })), null, 2);
+                },
+            }),
+            delegation_update: tool({
+                description: "Update delegation lifecycle status and optionally persist a result or error.",
+                args: {
+                    id: tool.schema.string().describe("Delegation id."),
+                    status: tool.schema.enum(["pending", "running", "complete", "error", "timeout"]),
+                    result: tool.schema.string().optional(),
+                    error: tool.schema.string().optional(),
+                },
+                async execute(args) {
+                    const record = await updateDelegation(args.id, {
+                        status: args.status,
+                        result: args.result,
+                        error: args.error,
+                    });
+                    if (args.result || args.error) {
+                        await captureOutput({
+                            agentId: record.agent,
+                            delegationId: record.id,
+                            content: args.result ?? args.error ?? "",
+                            metadata: { kind: args.error ? "error" : "result", status: args.status },
+                        });
+                    }
+                    return JSON.stringify(record, null, 2);
+                },
+            }),
+            delegation_subtask_create: tool({
+                description: "Create and link a persistent subtask under a delegation.",
+                args: {
+                    delegationId: tool.schema.string(),
+                    description: tool.schema.string(),
+                    assignedAgent: tool.schema.string().optional(),
+                },
+                async execute(args) {
+                    const delegation = await readDelegation(args.delegationId);
+                    const subtask = await createSubtask(args);
+                    await updateDelegation(delegation.id, {
+                        subtaskIds: [...new Set([...delegation.subtaskIds, subtask.id])],
+                    });
+                    return JSON.stringify(subtask, null, 2);
+                },
+            }),
+            delegation_output_capture: tool({
+                description: "Persist output linked to a delegation or subtask.",
+                args: {
+                    agentId: tool.schema.string(),
+                    content: tool.schema.string(),
+                    delegationId: tool.schema.string().optional(),
+                    subtaskId: tool.schema.string().optional(),
+                },
+                async execute(args) {
+                    if (!args.delegationId && !args.subtaskId) {
+                        throw new Error("delegationId or subtaskId is required");
+                    }
+                    return JSON.stringify(await captureOutput(args), null, 2);
                 },
             }),
             sync_status: tool({
