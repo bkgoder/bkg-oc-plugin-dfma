@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BKG OpenCode Control</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">bkg-oc-plugin-stop-4uck-m3-agen1s</p>
+          <h1>OpenCode Control Dashboard</h1>
+          <p class="muted">Blocker, Agent Rat, Votes, Memory und Sync. Endlich ein Ort, an dem Agenten sich nicht heimlich in JSON verstecken.</p>
+        </div>
+        <div class="actions">
+          <button id="refresh">Refresh</button>
+          <button id="read-aloud">Vorlesen</button>
+        </div>
+      </header>
+
+      <section class="grid stats" id="stats"></section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Blocker</h2>
+          <button id="create-demo-blocker">Demo Blocker</button>
+        </div>
+        <div id="blockers" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Agent Rat</h2>
+        <div id="rat-sessions" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Votes</h2>
+        <div id="votes" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Memory</h2>
+        <div id="memories" class="cards"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Fourth Voice</h2>
+        <p class="muted">Legt eine Anfrage für ChatGPT oder externen Reviewer ab. Ja, sogar ich bekomme jetzt einen Stuhl im Rat. Bürokratie gewinnt immer.</p>
+        <textarea id="fourth-prompt" placeholder="Was soll die vierte Stimme prüfen?"></textarea>
+        <button id="fourth-submit">Fourth Voice anfragen</button>
+        <pre id="fourth-result"></pre>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
