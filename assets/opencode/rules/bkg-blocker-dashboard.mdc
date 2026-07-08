@@ -1,0 +1,21 @@
+---
+keywords: ["blocker", "dashboard", "approve", "reject", "ui"]
+match: any
+---
+# BKG Blocker Dashboard Rules
+
+When a blocker is detected:
+1. Dashboard opens/updates automatically
+2. Current blocker, agent positions, and vote table are displayed
+3. User can Approve, Reject, or Request Revision
+4. TTS can read the current blocker summary aloud
+5. Fourth voice API can be called for external review
+
+API endpoints:
+- GET /api/state
+- POST /api/blocker
+- POST /api/rat/start
+- POST /api/vote
+- POST /api/user/approve
+- POST /api/user/reject
+- POST /api/tts/read

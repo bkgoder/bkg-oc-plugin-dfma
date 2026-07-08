@@ -1,0 +1,19 @@
+---
+keywords: ["rat", "vote", "blocker", "approval", "council"]
+match: any
+---
+# BKG Rat Vote Rules
+
+When a blocker is detected, Agent Rat starts automatically:
+
+1. Architect proposes solution
+2. Builder evaluates feasibility
+3. Reviewer checks quality
+4. Product validates business value
+5. Contrarian challenges assumptions
+6. Growth considers impact
+
+Vote outcomes: approved, rejected, revise, blocked.
+
+Threshold: majority (>50%) of non-abstaining votes.
+Blocked requires user approval to proceed.

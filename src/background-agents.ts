@@ -68,11 +68,11 @@ async function listRecords(): Promise<DelegationRecord[]> {
   await ensureRoot()
   const files = await fs.readdir(delegationRoot())
   const records: DelegationRecord[] = []
-  for (const file of files.filter((f) => f.endsWith(".json"))) {
+  for (const file of files.filter((f: string) => f.endsWith(".json"))) {
     try {
       records.push(JSON.parse(await fs.readFile(path.join(delegationRoot(), file), "utf8")) as DelegationRecord)
     } catch {
-      // Ignore damaged records; one bad JSON file should not break listing. Humanity tried that with bureaucracy already.
+      // Ignore damaged records
     }
   }
   return records.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
@@ -118,9 +118,6 @@ async function runDelegation(prompt: string, agent: string, timeoutMs = DEFAULT_
   await writeRecord(record)
   await persistMarkdown(record)
 
-  // OpenCode plugin API execution is intentionally conservative here: the tool persists the
-  // delegation request immediately and returns a retrieval handle. A host/runtime integration can
-  // replace this shim with real sub-session execution while keeping the same durable artifact API.
   const terminal = new Date().toISOString()
   const completed: DelegationRecord = {
     ...record,
@@ -144,8 +141,7 @@ async function runDelegation(prompt: string, agent: string, timeoutMs = DEFAULT_
 }
 
 export function createBackgroundAgentsPlugin(): Plugin {
-  return {
-    name: "bk-sstio-fuck-up-me-opencode-plugin",
+  return async () => ({
     tool: {
       delegate: tool({
         description: "Persist a background delegation request and return an id for later retrieval.",
@@ -191,5 +187,5 @@ export function createBackgroundAgentsPlugin(): Plugin {
         },
       }),
     },
-  }
+  })
 }
