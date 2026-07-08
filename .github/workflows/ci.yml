@@ -34,6 +34,9 @@ jobs:
       - name: README lint
         run: npm run lint:readme
 
+      - name: Lockfile lint
+        run: npm run lint:lockfile
+
       - name: Typecheck
         run: npm run typecheck
 
