@@ -1,6 +1,6 @@
 ---
 description: BKG memory command. Read, write, validate and summarize project memory.
-agent: bkg-six-main-orchestrator
+agent: bkg-workflow-orchestrator
 ---
 
 Use `bkg-six-main-flow`.
