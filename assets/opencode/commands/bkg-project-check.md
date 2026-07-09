@@ -1,6 +1,6 @@
 ---
 description: BKG project check command. Inspect repository, docs, state and starting context.
-agent: bkg-six-main-orchestrator
+agent: bkg-workflow-orchestrator
 ---
 
 Use `bkg-six-main-flow`.
