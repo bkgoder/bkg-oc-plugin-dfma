@@ -103,7 +103,7 @@ async function updateOpenCodeJson() {
     config.permission.bash = config.permission.bash || {};
     const bashRules = config.permission.bash;
     const bkgCommands = [
-      "./0ero*", "./1brain*", "./2hit*", "./3some*", "./4ever*", "./4ucker*",
+      "./bkg-zero*", "./bkg-brain*", "./bkg-hit*", "./bkg-some*", "./bkg-ever*", "./bkg-fucker*",
       "npm run typecheck*", "npm run test*", "npm run build*", "npm run ci*",
       "npm run install:assets*", "npm run dashboard:start*",
       "node scripts/install-assets.js*", "tsx scripts/install-assets.ts*",
