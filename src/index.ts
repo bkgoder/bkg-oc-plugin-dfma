@@ -73,6 +73,12 @@ import {
   buildSyncManifest,
   getSyncStatus,
 } from "./sync/index.js";
+import {
+  checkConfiguredPluginUpdates,
+  defaultUpdateNotifierConfig,
+  extractPinnedPluginsFromConfig,
+  parsePinnedPlugin,
+} from "./update-notifier/index.js";
 import { openReviewGate } from "./review-gate/index.js";
 import {
   createLiveOutputReporter,
@@ -116,6 +122,12 @@ export type {
   SyncPathSpec,
   SyncStatus,
 } from "./sync/index.js";
+export type {
+  PinnedPluginRef,
+  PluginUpdateInfo,
+  UpdateNotifierConfig,
+  UpdateNotifierSummary,
+} from "./update-notifier/index.js";
 export type {
   ReviewAnnotation,
   ReviewDecision,
@@ -171,6 +183,7 @@ export {
   readBlocker,
   listBlockers,
   shouldStartRat,
+  autoStartRatForBlocker,
   createRatSession,
   addAgentPosition,
   setFourthVoice,
@@ -181,11 +194,18 @@ export {
   tallyVotes,
   determineOutcome,
   listVotes,
+  recordUserApproval,
+  readUserApproval,
+  listUserApprovals,
   createSyncService,
   defaultSyncConfig,
   defaultSyncPaths,
   buildSyncManifest,
   getSyncStatus,
+  checkConfiguredPluginUpdates,
+  defaultUpdateNotifierConfig,
+  extractPinnedPluginsFromConfig,
+  parsePinnedPlugin,
   openReviewGate,
   createLiveOutputReporter,
   getLiveOutputSnapshot,
