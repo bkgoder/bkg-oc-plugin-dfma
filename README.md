@@ -1,6 +1,6 @@
 # BKG OpenCode Plugin DFMA
 
-BKG OpenCode Plugin DFMA is a plugin-ready OpenCode package for coordinated agent work. It bundles the BKG six-command workflow assets, background delegation, Agent Rat voting, dashboard review gates, local memory, sync manifests, update-notifier parsing, Conclave-style debate sessions, and a stable BitShit adapter surface.
+BKG OpenCode Plugin DFMA is a plugin-ready OpenCode package for coordinated agent work. It bundles the BKG six-command workflow assets, background delegation, Agent Rat voting, dashboard review gates, local memory, sync manifests, update-notifier parsing, Conclave-style debate sessions, Fourth Voice external reviewer API, and a stable BitShit adapter surface.
 
 The package is intentionally local-first. It writes runtime state under the user account, exposes browser-based control surfaces, and keeps user approval explicit instead of letting agents quietly decide important things because apparently civilization needed another way to create paperwork.
 
@@ -14,14 +14,31 @@ The package is intentionally local-first. It writes runtime state under the user
 
 For local development, install from this repository or use the generated package tarball after `npm pack`.
 
+## Auto-install
+
+When installed via `npm install`, the plugin automatically:
+
+1. Copies OpenCode assets (commands, agents, skills, rules) to `~/.config/opencode`
+2. Updates `opencode.json` with the plugin reference
+3. Registers all BKG agents and skills
+4. Installs CLI helper scripts (`0ero`, `1brain`, `2hit`, `3some`, `4ever`, `4ucker`)
+5. Sets up bash permissions for BKG commands
+
+For manual installation:
+
+```bash
+npm run install:assets
+```
+
 ## Docs
 
-- Command reference: [`docs/commands.md`](docs/commands.md)
-- Install and local verification: [`docs/install.md`](docs/install.md)
 - Implementation plan: [`docs/plugin-ready-plan.md`](docs/plugin-ready-plan.md)
+- Task backlog: [`docs/tasks.md`](docs/tasks.md)
+- Agent work contract: [`docs/agent-work-contract.md`](docs/agent-work-contract.md)
 - Agent lane prompts: [`docs/agent-lane-prompts.md`](docs/agent-lane-prompts.md)
 - Release readiness gate: [`docs/release-readiness.md`](docs/release-readiness.md)
 - ACP compatibility: [`docs/acp.md`](docs/acp.md)
+- Debate reports: [`docs/debat/`](docs/debat/)
 
 ## ACP editors
 
@@ -61,34 +78,36 @@ dashboard/review-gate settings, and ACP limitations, see
 - **Agent Rat**: escalate blockers into structured multi-agent review.
 - **Vote engine**: record approve, reject, abstain and tally decisions.
 - **Dashboard**: local HTTP UI for blockers, Rat sessions, votes, memory, TTS and fourth-voice requests.
-- **Review gate**: Plannotator-inspired local browser approval flow supports approve, reject and revise for blocker and Rat decisions. Annotation support is planned.
+- **Review gate**: Plannotator-inspired local browser approval flow supports approve, reject, revise, and annotations for blocker and Rat decisions.
 - **Conclave model**: Captain plus Facts, Logic and Alternative perspectives with consensus threshold support.
 - **Sync manifest**: OpenCode config, skills, agents, model favorites and BKG plugin state path planning inspired by opencode-synced.
 - **Update notifier parser**: detects pinned plugin refs so updates can be surfaced without auto-updating.
+- **Fourth Voice API**: external reviewer integration (OpenAI/Anthropic/custom) for Rat sessions.
 - **BitShit adapter**: stable interface for future BitShit integration, with both stub and runtime-backed implementations.
 
-## Commands and assets
+## BKG six-main commands
 
-The install helper copies packaged OpenCode assets into the user's config directory:
-
-```bash
-npm run install:assets
-```
-
-The BKG six-main command model uses explicit command names:
+The BKG workflow uses six explicit commands:
 
 ```text
-/bkg-project-check
-/bkg-memory
-/bkg-git
-/bkg-tasks
-/bkg-rules
-/bkg-debate
+/0ero   — project check and orientation
+/1brain  — memory operations (remember, look, decision, dump, validate)
+/2hit    — git operations (status, down/pull, up/push, commit)
+/3some   — task queue (add, run, list, show, update)
+/4ever   — rules and done-check
+/4ucker  — team debates, Agent Rat, votes, delegation
 ```
 
-Detailed command behavior lives in [`docs/commands.md`](docs/commands.md). Install and verification steps live in [`docs/install.md`](docs/install.md).
+CLI helper scripts are installed to `~/.config/opencode/bin/` and can be used directly:
 
-Everything else should remain a subcommand, skill, rule or internal tool. Humans keep inventing menu sprawl; this repo tries not to join them.
+```bash
+~/.config/opencode/bin/0ero check
+~/.config/opencode/bin/1brain remember "decision text"
+~/.config/opencode/bin/2hit status
+~/.config/opencode/bin/3some list
+~/.config/opencode/bin/4ever rules
+~/.config/opencode/bin/4ucker team "problem description"
+```
 
 ## Dashboard
 
@@ -114,16 +133,16 @@ BKG_OC_DASHBOARD_PORT=4774
 Dashboard API endpoints currently include:
 
 ```text
-GET  /api/state
-GET  /api/summary
-GET  /api/live-output?after=<sequence>
+GET /api/state
+GET /api/summary
+GET /api/live-output?after=<sequence>
 POST /api/blocker
 POST /api/rat/start
 POST /api/vote
 POST /api/user/approve
 POST /api/user/reject
 POST /api/user/revise
-GET  /api/vote/tally?ratSessionId=...
+GET /api/vote/tally?ratSessionId=...
 POST /api/tts/read
 POST /api/fourth-voice/request
 ```
@@ -139,13 +158,37 @@ This behavior is inspired by the GPL-3.0 project
 No third-party source file is vendored; the dashboard integration, event model,
 storage bridge and UI are implemented in this package.
 
+## Fourth Voice API
+
+The Fourth Voice API allows external AI reviewers (OpenAI, Anthropic, or custom providers) to participate in Rat sessions. Configure your provider:
+
+```bash
+# Save config to ~/.local/share/opencode/fourth-voice.json
+{
+  "provider": "openai",
+  "apiKey": "sk-...",
+  "baseURL": "https://api.openai.com/v1",
+  "model": "gpt-4o-mini"
+}
+```
+
+Then call from the dashboard or via API:
+
+```bash
+POST /api/fourth-voice/request
+{
+  "ratSessionId": "rat-123",
+  "prompt": "Review this decision for risks"
+}
+```
+
 ## BitShit adapter
 
 Two adapter entry points exist:
 
 ```ts
-import { createBitshitAdapter } from "./src/bitshit/adapter.js"
-import { createRuntimeBitshitAdapter } from "./src/bitshit/runtime-adapter.js"
+import { createBitshitAdapter } from "./src/bitshit/adapter.js";
+import { createRuntimeBitshitAdapter } from "./src/bitshit/runtime-adapter.js";
 ```
 
 Use `createRuntimeBitshitAdapter()` for real plugin state. It delegates blockers, Rat sessions, votes and memory to the local runtime modules.
@@ -202,12 +245,17 @@ npm run ci
 
 ## Test scope
 
-The current test suite is intentionally small and contract-focused:
+The current test suite is contract-focused:
 
 - update-notifier pinned plugin parsing
 - Conclave session early-stop behavior
 - BitShit runtime adapter smoke contract
 - Dashboard API smoke and validation coverage
+- Fourth Voice API client tests
+- Rules loader with recursive directory support
+- Memory short-term and worktree sync
+- Delegation and subtask persistence
+- Agent Rat and vote tally logic
 
 More integration tests should be added as the dashboard review gate becomes executable.
 
@@ -218,6 +266,8 @@ More integration tests should be added as the dashboard review gate becomes exec
 - The plugin does not auto-update dependencies or plugin refs.
 - Update detection should only notify and never mutate config without explicit approval.
 - Runtime decisions that affect work should flow through Rat, vote or user approval state.
+- Fourth Voice API requires explicit configuration; no API keys are hardcoded.
+- CLI helpers are installed with executable permissions but do not auto-run without user consent.
 
 ## License
 
