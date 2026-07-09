@@ -1,6 +1,6 @@
 ---
 description: BKG rules command. Check workflow rules, done criteria and release discipline.
-agent: bkg-six-main-orchestrator
+agent: bkg-workflow-orchestrator
 ---
 
 Use `bkg-six-main-flow`.
