@@ -14,6 +14,15 @@ The package is intentionally local-first. It writes runtime state under the user
 
 For local development, install from this repository or use the generated package tarball after `npm pack`.
 
+## Docs
+
+- Command reference: [`docs/commands.md`](docs/commands.md)
+- Install and local verification: [`docs/install.md`](docs/install.md)
+- Implementation plan: [`docs/plugin-ready-plan.md`](docs/plugin-ready-plan.md)
+- Agent lane prompts: [`docs/agent-lane-prompts.md`](docs/agent-lane-prompts.md)
+- Release readiness gate: [`docs/release-readiness.md`](docs/release-readiness.md)
+- ACP compatibility: [`docs/acp.md`](docs/acp.md)
+
 ## ACP editors
 
 OpenCode already speaks ACP. Start it as the editor-managed subprocess with:
@@ -76,6 +85,8 @@ The BKG six-main command model uses explicit command names:
 /bkg-rules
 /bkg-debate
 ```
+
+Detailed command behavior lives in [`docs/commands.md`](docs/commands.md). Install and verification steps live in [`docs/install.md`](docs/install.md).
 
 Everything else should remain a subcommand, skill, rule or internal tool. Humans keep inventing menu sprawl; this repo tries not to join them.
 
