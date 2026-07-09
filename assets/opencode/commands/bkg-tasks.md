@@ -1,6 +1,6 @@
 ---
 description: BKG tasks command. Add, run, list, show and update project tasks.
-agent: bkg-six-main-orchestrator
+agent: bkg-workflow-orchestrator
 ---
 
 Use `bkg-six-main-flow`.
