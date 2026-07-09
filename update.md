@@ -8,18 +8,18 @@ Das Repo bleibt öffentlich sichtbar und arbeitsfähig. Es wird nicht wieder ver
 
 ## Command-Namensregel
 
-Alle sichtbaren OpenCode-Commands sollen mit `bkg-` beginnen, damit sie unter `/` einheitlich auffindbar sind.
+Alle sichtbaren OpenCode-Commands sollen mit `bkg-` beginnen und klar sagen, was sie tun. Keine Zahlencodes, keine Insider-Witze, keine doppeldeutigen Kurzformen. Menschen haben schon genug Probleme mit Benennung, da muss die Maschine nicht auch noch mitmachen.
 
 Neue Hauptcommands:
 
-- `/bkg-zero`
-- `/bkg-brain`
-- `/bkg-hit`
-- `/bkg-some`
-- `/bkg-ever`
-- `/bkg-fucker`
+- `/bkg-project-check` — Projekt, Repo, Docs und Startkontext prüfen
+- `/bkg-memory` — Memory lesen, schreiben und validieren
+- `/bkg-git` — Git-Status, Pull, Commit und Push bewusst ausführen
+- `/bkg-tasks` — Tasks anlegen, anzeigen, starten und aktualisieren
+- `/bkg-rules` — Workflow-Regeln, Done-Kriterien und Release-Gates prüfen
+- `/bkg-debate` — Team-Debatten, Rat-Sessions, Votes und Delegation starten
 
-Alte Kurzcommands bleiben höchstens als interne/temporäre Kompatibilität erhalten und sollen nicht mehr als primärer Weg dokumentiert werden.
+Alte Kurzcommands bleiben nicht als Hauptcommands erhalten und sollen nicht mehr dokumentiert werden.
 
 ## Was das Plugin jetzt leisten soll
 
@@ -38,28 +38,22 @@ Alte Kurzcommands bleiben höchstens als interne/temporäre Kompatibilität erha
 
 ### 1. Runtime-State-Pfad korrigieren
 
-Aktuell darf kein neuer Runtime-State mehr unter dem alten Paketnamen landen.
+Erledigt. Neuer Runtime-State geht nach `bkg-oc-plugin-bkg-dfma`. Env-Override `BKG_OC_PLUGIN_STATE_DIR` bleibt erhalten.
 
-Soll-Ziel:
+### 2. Commands auf klare `bkg-` Namen normalisieren
 
-- alter Pfad raus: `bkg-oc-plugin-stop-4uck-m3-agen1s`
-- neuer Pfad rein: `bkg-oc-plugin-bkg-dfma`
-- Env-Override `BKG_OC_PLUGIN_STATE_DIR` bleibt erhalten
+Erledigt als Hauptmodell:
 
-### 2. Commands auf `bkg-` normalisieren
-
-Alle command-Dateien und Doku-Verweise prüfen:
-
-- alte `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4ucker` nicht mehr als Hauptcommands führen
-- neue `/bkg-zero`, `/bkg-brain`, `/bkg-hit`, `/bkg-some`, `/bkg-ever`, `/bkg-fucker` als primäre Commands setzen
-- README, docs und Assets angleichen
+- alte `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4ucker` entfernt
+- kurze Zwischenformen `/bkg-zero`, `/bkg-brain`, `/bkg-hit`, `/bkg-some`, `/bkg-ever`, `/bkg-fucker` entfernt
+- neue sprechende Commands in README, Rules, Orchestrator und Installer eingetragen
 
 ### 3. README ehrlich halten
 
-README darf nur aktuelle Fähigkeiten als fertig verkaufen.
+Erledigt für den aktuellen Stand:
 
 - Approve, reject und revise sind aktuelle Review-Gate-Funktionen
-- Annotationen nur als geplant markieren, solange keine echte Annotation-API/Implementierung vorhanden ist
+- Annotationen sind als geplant markiert, solange keine echte Annotation-API/Implementierung vorhanden ist
 
 ### 4. Postinstall bewusst halten
 
@@ -83,12 +77,12 @@ Nach Änderungen muss mindestens laufen:
 
 Keine neuen Großideen in diesen Release-Zweig kippen.
 
-Erst fertig machen:
+Erst prüfen:
 
-1. State-Pfad
-2. Command-Namen
-3. README-Wahrheit
-4. Tasks aktualisieren
-5. CI grün
+1. Commands sichtbar
+2. CI grün
+3. State-Pfad korrekt
+4. README ehrlich
+5. Produktiver Start möglich
 
 Danach kann produktiv weitergebaut werden, ohne das Repo wieder zu verstecken oder in privaten Chaos-Nebel zu schieben.
