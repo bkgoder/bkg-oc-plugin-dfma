@@ -16,7 +16,14 @@ Only these six commands are top-level workflow commands:
 
 Everything else must be a subcommand or an OpenCode agent/tool/skill.
 
-Forbidden legacy main commands:
+## Active visible agent families
+
+- `bkg-workflow-*`
+- `bkg-debate-*`
+- `bkg-council-*`
+- `bkg-vote-*`
+
+## Forbidden legacy main commands
 
 - `0ero`
 - `1brain`
@@ -40,6 +47,12 @@ Forbidden legacy main commands:
 - `commit`
 - `pull`
 - `push`
+
+## Forbidden legacy agent names
+
+- `bkg-six-main-orchestrator`
+- `bkg-4ucker-*`
+- `bkg-rat-*`
 
 Required discipline:
 
