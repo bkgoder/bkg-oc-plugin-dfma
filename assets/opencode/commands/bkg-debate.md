@@ -1,6 +1,6 @@
 ---
-description: BKG debate command. Run team debates, Agent Rat sessions, votes and background delegation.
-agent: bkg-six-main-orchestrator
+description: BKG debate command. Run team debates, council sessions, votes and background delegation.
+agent: bkg-workflow-orchestrator
 ---
 
 Use skills:
@@ -19,15 +19,24 @@ Run shell/helper or plugin tools as needed.
 Subcommands:
 
 - `team "problem"` visible 3-agent debate
-- `rat <plan|problem|feature|post|decide> "topic"` council
+- `council <plan|problem|feature|post|decide> "topic"` council review
 - `vote <team|council|release|post|feature> "decision"` vote protocol
 - `delegate "prompt" "agent"` persistent background delegation
 
 Required visible agents for team:
 
-- `@bkg-4ucker-builder`
-- `@bkg-4ucker-reviewer`
-- `@bkg-4ucker-product`
+- `@bkg-debate-implementation`
+- `@bkg-debate-review`
+- `@bkg-debate-product`
+
+Required council agents:
+
+- `@bkg-council-architecture`
+- `@bkg-council-implementation`
+- `@bkg-council-risk-review`
+- `@bkg-council-product`
+- `@bkg-council-contrarian`
+- `@bkg-council-communication`
 
 Required vote agents:
 
