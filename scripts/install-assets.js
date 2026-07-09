@@ -1,6 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { spawn } from "node:child_process";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname);
 const source = path.join(root, "assets", "opencode");
@@ -121,11 +122,73 @@ async function updateOpenCodeJson() {
   }
 }
 
+async function installCliHelpers() {
+  const binSource = path.join(source, "bin");
+  const binTarget = path.join(target, "bin");
+  
+  try {
+    await fs.mkdir(binTarget, { recursive: true });
+    const files = await fs.readdir(binSource);
+    
+    for (const file of files) {
+      const srcPath = path.join(binSource, file);
+      const dstPath = path.join(binTarget, file);
+      await fs.copyFile(srcPath, dstPath);
+      await fs.chmod(dstPath, 0o755);
+    }
+    
+    console.log(`Installed CLI helpers to ${binTarget}`);
+  } catch (error) {
+    console.warn("Could not install CLI helpers:", error.message);
+  }
+}
+
+async function runHelperScripts() {
+  const binTarget = path.join(target, "bin");
+  
+  try {
+    // Run the main helper installer if it exists
+    const completeHelper = path.join(binTarget, "install-bkg-complete-helpers.sh");
+    const sixMainHelper = path.join(binTarget, "install-bkg-six-main-helpers.sh");
+    
+    // Run in the target directory (user's project or home)
+    const runDir = process.env.OPENCODE_INSTALL_DIR ?? process.cwd();
+    
+    const scripts = [completeHelper, sixMainHelper].filter((p) => 
+      fs.existsSync(p)
+    );
+    
+    for (const script of scripts) {
+      try {
+        console.log(`Running ${path.basename(script)}...`);
+        await new Promise((resolve, reject) => {
+          const child = spawn("bash", [script], {
+            cwd: runDir,
+            stdio: "inherit",
+            shell: false,
+          });
+          child.once("error", reject);
+          child.once("exit", (code) => {
+            if (code === 0) resolve();
+            else reject(new Error(`${script} exited with code ${code}`));
+          });
+        });
+      } catch (error) {
+        console.warn(`Helper script ${path.basename(script)} failed:`, error.message);
+      }
+    }
+  } catch (error) {
+    console.warn("Could not run helper scripts:", error.message);
+  }
+}
+
 async function main() {
   try {
     await copyDir(source, target);
     console.log(`Installed BKG OpenCode assets to ${target}`);
     await updateOpenCodeJson();
+    await installCliHelpers();
+    await runHelperScripts();
     console.log("Restart OpenCode after installing assets.");
   } catch (error) {
     console.error("Failed to install OpenCode assets:", error);

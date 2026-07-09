@@ -83,6 +83,11 @@ import {
   loadAcpCompatibilityConfig,
   reviewGateTimeoutMs,
 } from "./acp/index.js";
+import {
+  callFourthVoice,
+  loadFourthVoiceConfig,
+  saveFourthVoiceConfig,
+} from "./dashboard/fourth-voice.js";
 export type { AgentIdentity, IdentityRegistry } from "./identity.js";
 export type { PersonalityPreset } from "./personality.js";
 export type { BitshitControlAdapter } from "./bitshit/types.js";
@@ -187,4 +192,7 @@ export {
   resetLiveOutput,
   loadAcpCompatibilityConfig,
   reviewGateTimeoutMs,
+  callFourthVoice,
+  loadFourthVoiceConfig,
+  saveFourthVoiceConfig,
 };
