@@ -13,7 +13,7 @@ Aktueller Hauptzweck:
 - OpenCode-Assets installieren
 - `opencode.json` mit Plugin-Referenz aktualisieren
 - lokale Agent-Kontrollschicht bereitstellen
-- Dashboard, Blocker, Rat, Votes, User-Entscheidung und Memory verbinden
+- Dashboard, Blocker, Council, Votes, User-Entscheidung und Memory verbinden
 - BitShit später über stabile Adapterfläche anbinden
 
 ## Command-Standard
@@ -27,23 +27,35 @@ Aktuelle Hauptcommands:
 - `/bkg-git` — Git-Status, Pull, Commit und Push bewusst ausführen
 - `/bkg-tasks` — Tasks anlegen, anzeigen, starten und aktualisieren
 - `/bkg-rules` — Workflow-Regeln, Done-Kriterien und Release-Gates prüfen
-- `/bkg-debate` — Team-Debatten, Rat-Sessions, Votes und Delegation starten
+- `/bkg-debate` — Team-Debatten, Council-Sessions, Votes und Delegation starten
 
 Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4ucker`, `/bkg-zero`, `/bkg-brain`, `/bkg-hit`, `/bkg-some`, `/bkg-ever` und `/bkg-fucker` werden nicht mehr als primäre Commands geführt.
+
+## Agent-Standard
+
+Sichtbare Agent-Dateinamen müssen klar sagen, welche Rolle sie haben.
+
+Aktuelle Hauptagenten:
+
+- `bkg-workflow-orchestrator`
+- `bkg-debate-implementation`
+- `bkg-debate-review`
+- `bkg-debate-product`
+- `bkg-council-architecture`
+- `bkg-council-implementation`
+- `bkg-council-risk-review`
+- `bkg-council-product`
+- `bkg-council-contrarian`
+- `bkg-council-communication`
+- `bkg-vote-chair`
+- `bkg-vote-recorder`
+- `bkg-vote-auditor`
+
+Legacy-Agenten wie `bkg-six-main-orchestrator`, `bkg-4ucker-*` und `bkg-rat-*` werden nicht mehr als aktive Agent-Namen geführt.
 
 ## Lane 0 — Repo hygiene / baseline
 
 **Ziel:** Das Plugin muss sauber installierbar und typprüfbar sein.
-
-**Files:**
-
-- `package.json`
-- `tsconfig.json`
-- `src/index.ts`
-- `README.md`
-- `.gitignore`
-- `.github/workflows/ci.yml`
-- `update.md`
 
 **Tasks:**
 
@@ -55,12 +67,6 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 - [x] Runtime-State-Pfad auf neuen Paketnamen korrigiert
 - [x] `update.md` als produktiver Update-Plan angelegt
 - [x] README auf sprechende Commands aktualisiert
-
-**Done wenn:**
-
-- TypeScript kompiliert ohne Fehler.
-- CI läuft auf PRs.
-- README beschreibt Plugin, Assets, Dashboard und BitShit Adapter.
 
 ## Lane 1 — Rules Loader
 
@@ -82,11 +88,12 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 **Tasks:**
 
 - [x] Identity schema definiert
-- [x] Profile für Builder/Reviewer/Product/Rat/Vote Agents
+- [x] Profile für Implementation/Review/Product/Council/Vote Agents
 - [x] Personality-Presets definiert
 - [x] Tool scopes dokumentiert
 - [x] Export `createIdentityRegistry()` und `getPersonality()`
-- [x] Six-main-Orchestrator auf sprechende Commands aktualisiert
+- [x] Workflow-Orchestrator auf sprechende Commands aktualisiert
+- [x] Agent-Dateinamen auf sprechende Namen normalisiert
 
 ## Lane 3 — Memory Core
 
@@ -112,14 +119,14 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 - [x] `delegation_read()` und `delegation_list()` verbessert
 - [x] Output capture per agent/run
 
-## Lane 5 — Ensemble / Agent Rat / Votes
+## Lane 5 — Ensemble / Council / Votes
 
-**Ziel:** Rat startet bei Planung, Features und Blockern automatisch.
+**Ziel:** Council startet bei Planung, Features und Blockern automatisch.
 
 **Tasks:**
 
-- [x] Rat session schema
-- [x] blocker -> rat autostart
+- [x] Council/Rat session schema
+- [x] blocker -> council autostart
 - [x] vote table schema
 - [x] approval threshold rules
 - [x] user approval state
@@ -142,7 +149,7 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 
 ## Lane 7 — TTS / Vorlesen
 
-**Ziel:** Dashboard kann aktuellen Blocker, Rat-Summary oder Vote vorlesen.
+**Ziel:** Dashboard kann aktuellen Blocker, Council-Summary oder Vote vorlesen.
 
 **Tasks:**
 
@@ -172,12 +179,12 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 - [x] Six commands auf klare Namen normalisiert: `bkg-project-check`, `bkg-memory`, `bkg-git`, `bkg-tasks`, `bkg-rules`, `bkg-debate`
 - [x] Legacy-Zahlencommands aus `assets/opencode/commands/` entfernt
 - [x] Kurze halbdeutige Zwischencommands aus `assets/opencode/commands/` entfernt
-- [x] Orchestrator agent aktualisiert
+- [x] Orchestrator agent auf `bkg-workflow-orchestrator` normalisiert
+- [x] Debate team agents auf `bkg-debate-*` normalisiert
+- [x] Council agents auf `bkg-council-*` normalisiert
+- [x] Vote agents vorhanden und sprechend
 - [x] Rules aktualisiert
 - [x] Installer-Permissions aktualisiert
-- [x] 4ucker team agents vorhanden
-- [x] Rat agents vorhanden
-- [x] Vote agents vorhanden
 - [x] Skills vorhanden
 
 ## Jetzt produktiv weiterarbeiten
@@ -188,6 +195,7 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 - [ ] Assets neu installieren: `npm run install:assets`
 - [ ] OpenCode neu starten
 - [ ] Unter `/` prüfen, ob nur die neuen sprechenden Commands sichtbar sind
+- [ ] Agent-Liste prüfen, ob Legacy-Agenten lokal noch als kopierte Altdateien vorhanden sind
 - [ ] CI auf aktuellem Head laufen lassen: `npm run ci`
 - [ ] Dependency-Baum prüfen: `npm ls --depth=0`
 - [ ] Whitespace/Format prüfen: `git diff --check`
@@ -200,7 +208,7 @@ Legacy-Hauptcommands wie `/0ero`, `/1brain`, `/2hit`, `/3some`, `/4ever`, `/4uck
 Starte nur noch zielgerichtete Agents:
 
 1. **Agent A — Release Gate**: CI, npm ls, diff check, package dry-run
-2. **Agent B — Command UX**: `/bkg-*` Sichtbarkeit lokal prüfen
+2. **Agent B — Command/Agent UX**: `/bkg-*` Sichtbarkeit und Agent-Liste lokal prüfen
 3. **Agent C — Postinstall Policy**: privat behalten oder public-safe gaten
 4. **Agent D — Review Gate Next**: Annotationen/Line-Edits als nächstes echtes Feature
 
@@ -211,9 +219,10 @@ Keine neuen Großideen in diesen Stand kippen.
 Erst prüfen:
 
 1. Commands sichtbar
-2. CI grün
-3. State-Pfad korrekt
-4. README ehrlich
-5. Produktiver Start möglich
+2. Agent-Namen sauber
+3. CI grün
+4. State-Pfad korrekt
+5. README ehrlich
+6. Produktiver Start möglich
 
 Danach weiterbauen.
