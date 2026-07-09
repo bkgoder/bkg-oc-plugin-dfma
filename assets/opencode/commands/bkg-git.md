@@ -1,6 +1,6 @@
 ---
 description: BKG git command. Check status, pull, commit and push with explicit confirmation.
-agent: bkg-six-main-orchestrator
+agent: bkg-workflow-orchestrator
 ---
 
 Use `bkg-six-main-flow`.
