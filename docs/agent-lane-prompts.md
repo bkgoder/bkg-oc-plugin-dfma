@@ -25,6 +25,35 @@ If blocked, write `.agent-work/blockers/<agent-id>.<slug>.md` and stop.
 
 No claim, no work. No evidence, no done. Humanity has suffered enough from vibes-based completion.
 
+## Current visible agent names
+
+Workflow:
+
+- `bkg-workflow-orchestrator`
+
+Debate team:
+
+- `bkg-debate-implementation`
+- `bkg-debate-review`
+- `bkg-debate-product`
+
+Council:
+
+- `bkg-council-architecture`
+- `bkg-council-implementation`
+- `bkg-council-risk-review`
+- `bkg-council-product`
+- `bkg-council-contrarian`
+- `bkg-council-communication`
+
+Vote:
+
+- `bkg-vote-chair`
+- `bkg-vote-recorder`
+- `bkg-vote-auditor`
+
+Legacy names such as `bkg-six-main-orchestrator`, `bkg-4ucker-*` and `bkg-rat-*` are not active agent names anymore.
+
 ## Agent A — Release Gate / Core
 
 You are Agent A, Release Gate/Core.
@@ -61,9 +90,9 @@ Acceptance:
 - Runtime state path stays on `bkg-oc-plugin-bkg-dfma`
 - BitShit adapter types remain stable
 
-## Agent B — Rules / Commands / Assets
+## Agent B — Rules / Commands / Agents / Assets
 
-You are Agent B, Rules/Commands/Assets.
+You are Agent B, Rules/Commands/Agents/Assets.
 
 Lane:
 
@@ -72,7 +101,7 @@ Lane:
 
 Goal:
 
-Keep BKG rules loader and OpenCode asset pack consistent with the current command model.
+Keep BKG rules loader and OpenCode asset pack consistent with the current command and agent model.
 
 Allowed files:
 
@@ -81,6 +110,8 @@ Allowed files:
 - `scripts/install-assets.ts`
 - `scripts/install-assets.js`
 - `docs/commands.md`
+- `docs/tasks.md`
+- `docs/agent-lane-prompts.md`
 - `.agent-work/**`
 
 Do not edit dashboard, memory implementation or BitShit adapter files.
@@ -89,6 +120,7 @@ Acceptance:
 
 - Rules discovery/validation still works
 - assets include only the current top-level commands as primary commands
+- assets include only current visible agent names as primary agents
 - installer permissions match the current commands
 - `npm run install:assets` remains usable
 
@@ -100,6 +132,13 @@ Current commands:
 - `/bkg-tasks`
 - `/bkg-rules`
 - `/bkg-debate`
+
+Current primary agent groups:
+
+- `bkg-workflow-*`
+- `bkg-debate-*`
+- `bkg-council-*`
+- `bkg-vote-*`
 
 ## Agent C — Memory / Delegation
 
@@ -121,7 +160,7 @@ Allowed files:
 - `src/subagents/**`
 - `.agent-work/**`
 
-Do not edit dashboard, rules, commands or BitShit adapter files.
+Do not edit dashboard, rules, commands, agents or BitShit adapter files.
 
 Acceptance:
 
@@ -130,17 +169,17 @@ Acceptance:
 - subagent output capture works
 - memory evidence is written after work
 
-## Agent D — Rat / Vote / Blocker
+## Agent D — Council / Vote / Blocker
 
-You are Agent D, Rat/Vote/Blocker.
+You are Agent D, Council/Vote/Blocker.
 
 Lane:
 
-- Lane 5 — Ensemble / Agent Rat / Votes
+- Lane 5 — Ensemble / Council / Votes
 
 Goal:
 
-Maintain Agent Rat session logic, vote engine, blocker auto-start logic and fourth voice hooks.
+Maintain council session logic, vote engine, blocker auto-start logic and fourth voice hooks.
 
 Allowed files:
 
@@ -157,7 +196,7 @@ Do not edit dashboard server or memory implementation except through explicit ha
 
 Acceptance:
 
-- blocker can create RatSession
+- blocker can create council/Rat session
 - votes produce approved/rejected/revise/blocked
 - fourthVoice slot stays available
 - vote evidence is persisted
@@ -211,5 +250,5 @@ Acceptance:
 - no unresolved blockers
 - `npm run ci` passes or one clear blocker remains
 - `npm ls --depth=0` is clean or one clear blocker remains
-- command docs, rules, installer and README agree
+- command docs, agent docs, rules, installer and README agree
 - integration report created under `.agent-work/evidence/integration.<slug>.md`
