@@ -34,6 +34,7 @@
     "lint:lockfile": "node scripts/assert-lockfile.mjs",
     "ci": "npm run lint:readme && npm run lint:lockfile && npm run typecheck && npm run test && npm run build && npm pack --dry-run",
     "install:assets": "tsx scripts/install-assets.ts",
+    "postinstall": "node scripts/install-assets.js",
     "dashboard:start": "tsx src/dashboard/server.ts"
   },
   "dependencies": {
