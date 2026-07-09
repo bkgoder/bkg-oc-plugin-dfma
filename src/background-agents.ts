@@ -3,6 +3,7 @@ import * as os from "node:os"
 import * as path from "node:path"
 import { type Plugin, tool } from "@opencode-ai/plugin"
 import { createSyncService, defaultSyncConfig } from "./sync/index.js"
+import { checkConfiguredPluginUpdates, defaultUpdateNotifierConfig } from "./update-notifier/index.js"
 import { openReviewGate } from "./review-gate/index.js"
 import {
   createDelegation,
@@ -282,6 +283,22 @@ export function createBackgroundAgentsPlugin(): Plugin {
         args: {},
         async execute() {
           return JSON.stringify(await createSyncService(defaultSyncConfig()).pull(), null, 2)
+        },
+      }),
+      update_check: tool({
+        description: "Check pinned OpenCode plugin refs for newer versions without changing files. Returns suggested update prompts.",
+        args: {},
+        async execute() {
+          const summary = await checkConfiguredPluginUpdates(defaultUpdateNotifierConfig())
+          const prompts = summary.updates
+            .filter((item) => item.updateAvailable)
+            .map((item) => ({
+              plugin: item.plugin.name,
+              currentVersion: item.plugin.currentVersion,
+              latestVersion: item.latestVersion,
+              question: `Update ${item.plugin.name} from ${item.plugin.currentVersion} to ${item.latestVersion}?`,
+            }))
+          return JSON.stringify({ ...summary, prompts }, null, 2)
         },
       }),
       open_review_gate: tool({
